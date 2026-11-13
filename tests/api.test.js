@@ -28,3 +28,4 @@ test("14 Unknown incident returns 404",async()=>{const r=await api("PATCH","/api
 test.after(()=>{child.kill();fs.rmSync(directory,{recursive:true,force:true});});
 
 test("15 Camera status filter",async()=>{const r=await api("GET","/api/cameras?status=offline");assert.equal(r.status,200);assert.ok(r.json.every(x=>x.status==="offline"));});
+test("16 Reject overlong incident description",async()=>{const r=await api("POST","/api/incidents",{title:"Valid incident",cameraId:CAM,severity:"low",description:"X".repeat(501)});assert.equal(r.status,400);});
