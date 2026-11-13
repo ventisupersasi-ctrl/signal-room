@@ -1,0 +1,16 @@
+{
+  "name": "signal-room",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Учебный MVP: камеры, события и работа с инцидентами",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

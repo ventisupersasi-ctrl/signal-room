@@ -1,0 +1,82 @@
+{
+  "cameras": [
+    {
+      "id": "SR-11",
+      "name": "Западный холл",
+      "location": "Блок 1 / холл",
+      "status": "online",
+      "previewUrl": ""
+    },
+    {
+      "id": "SR-12",
+      "name": "Лаборатория робототехники",
+      "location": "Блок 2 / этаж 3",
+      "status": "online",
+      "previewUrl": ""
+    },
+    {
+      "id": "SR-13",
+      "name": "Склад оборудования",
+      "location": "Блок 2 / подвал",
+      "status": "online",
+      "previewUrl": ""
+    },
+    {
+      "id": "SR-14",
+      "name": "Парковочный въезд",
+      "location": "Внешний периметр",
+      "status": "offline",
+      "previewUrl": ""
+    }
+  ],
+  "events": [
+    {
+      "id": 201,
+      "cameraId": "SR-13",
+      "type": "door_open",
+      "severity": "medium",
+      "message": "Открытие служебной двери",
+      "createdAt": "2026-11-13T09:20:00.000Z"
+    },
+    {
+      "id": 202,
+      "cameraId": "SR-14",
+      "type": "camera_offline",
+      "severity": "high",
+      "message": "Недоступна камера на въезде",
+      "createdAt": "2026-11-13T09:22:00.000Z"
+    },
+    {
+      "id": 203,
+      "type": "motion",
+      "cameraId": "SR-12",
+      "severity": "medium",
+      "message": "Тест: движение в лаборатории",
+      "createdAt": "2026-11-13T12:18:52.924Z"
+    }
+  ],
+  "incidents": [
+    {
+      "id": 601,
+      "title": "Проверить оборудование въезда",
+      "cameraId": "SR-14",
+      "severity": "high",
+      "description": "Нет ответа от канала наблюдения",
+      "status": "in_progress",
+      "assignee": "Дежурная смена",
+      "createdAt": "2026-11-13T09:25:00.000Z",
+      "updatedAt": "2026-11-13T09:25:00.000Z"
+    },
+    {
+      "id": 602,
+      "title": "Тестовый осмотр холла",
+      "cameraId": "SR-11",
+      "severity": "high",
+      "description": "Проверка регистрации и маршрутизации инцидента",
+      "status": "in_progress",
+      "assignee": "Дежурная смена",
+      "createdAt": "2026-11-13T12:18:51.967Z",
+      "updatedAt": "2026-11-13T12:18:52.378Z"
+    }
+  ]
+}
