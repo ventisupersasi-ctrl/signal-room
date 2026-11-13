@@ -18,7 +18,7 @@ function tickets(){
  }
 }
 function cameras(){
- $("#cameraCards").innerHTML=model.cameras.map(x=>'<article class="camera"><div class="camera-visual"><span>'+safe(x.id)+'</span></div><div class="camera-info"><small><span class="indicator '+safe(x.status)+'"></span>'+safe(x.status==="online"?"В СЕТИ":"НЕТ СВЯЗИ")+'</small><h3>'+safe(x.name)+'</h3><p>'+safe(x.location)+'</p><button type="button" class="minor" data-camera="'+safe(x.id)+'" data-status="'+(x.status==="online"?"offline":"online")+'">Сменить статус</button></div></article>').join("");
+ $("#cameraCards").innerHTML=model.cameras.filter(x=>!$("#cameraStatus").value||x.status===$("#cameraStatus").value).map(x=>'<article class="camera"><div class="camera-visual"><span>'+safe(x.id)+'</span></div><div class="camera-info"><small><span class="indicator '+safe(x.status)+'"></span>'+safe(x.status==="online"?"В СЕТИ":"НЕТ СВЯЗИ")+'</small><h3>'+safe(x.name)+'</h3><p>'+safe(x.location)+'</p><button type="button" class="minor" data-camera="'+safe(x.id)+'" data-status="'+(x.status==="online"?"offline":"online")+'">Сменить статус</button></div></article>').join("");
 }
 function events(){
  const severity=$("#severity").value,cameraId=$("#cameraIdFilter").value;
@@ -44,7 +44,7 @@ $("#date").textContent=new Date().toLocaleDateString("ru-RU");
 $("#addIncident").onclick=()=>open("incident");$("#addEvent").onclick=()=>open("event");
 $("#close").onclick=()=>$("#drawer").close();$("#cancel").onclick=()=>$("#drawer").close();
 $("#reload").onclick=()=>refresh().then(()=>alertBox("Информация обновлена")).catch(e=>alertBox(e.message,true));
-$("#severity").onchange=events;$("#cameraIdFilter").onchange=events;
+$("#cameraStatus").onchange=cameras;$("#severity").onchange=events;$("#cameraIdFilter").onchange=events;
 $("#form").onsubmit=async ev=>{
  ev.preventDefault();const payload=Object.fromEntries(new FormData(ev.target));
  try{await call(model.mode==="incident"?"/api/incidents":"/api/events","POST",payload);$("#drawer").close();$("#form").reset();await refresh();alertBox("Запись добавлена");}catch(e){alertBox(e.message,true);}
