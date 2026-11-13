@@ -26,3 +26,5 @@ test("12 Resolve incident",async()=>{const r=await api("PATCH","/api/incidents/"
 test("13 Backward transition rejected",async()=>{const r=await api("PATCH","/api/incidents/"+created,{status:"new"});assert.equal(r.status,409);});
 test("14 Unknown incident returns 404",async()=>{const r=await api("PATCH","/api/incidents/999999",{status:"resolved"});assert.equal(r.status,404);});
 test.after(()=>{child.kill();fs.rmSync(directory,{recursive:true,force:true});});
+
+test("15 Camera status filter",async()=>{const r=await api("GET","/api/cameras?status=offline");assert.equal(r.status,200);assert.ok(r.json.every(x=>x.status==="offline"));});

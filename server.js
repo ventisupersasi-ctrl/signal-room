@@ -17,7 +17,7 @@ function next(items){return Math.max(0,...items.map(x=>Number(x.id)||0))+1;}
 const stamp=()=>new Date().toISOString();
 api.get("/api/health",(_,r)=>r.json({status:"ok",service:"signal-room",version:"1.0.0"}));
 api.get("/api/metrics",(_,r)=>{const s=db(),active=s.incidents.filter(i=>i.status!=="resolved");r.json({total:s.cameras.length,offline:s.cameras.filter(c=>c.status==="offline").length,active:active.length,critical:active.filter(i=>i.severity==="critical").length,recent:s.events.slice(-4)});});
-api.get("/api/cameras",(_,r)=>r.json(db().cameras));
+api.get("/api/cameras",(q,r)=>{let items=db().cameras;if(q.query.status)items=items.filter(x=>x.status===q.query.status);r.json(items);});
 api.patch("/api/cameras/:id",(q,r)=>reply(r,modify(s=>{const c=camera(s,q.params.id);if(!c)return error("Камера не найдена",404);if(!["online","offline"].includes(q.body.status))return error("Неверный статус камеры");c.status=q.body.status;c.updatedAt=stamp();return c;})));
 api.get("/api/events",(q,r)=>{let x=db().events;if(q.query.severity)x=x.filter(v=>v.severity===q.query.severity);if(q.query.cameraId)x=x.filter(v=>v.cameraId===q.query.cameraId);r.json([...x].reverse());});
 api.post("/api/events",(q,r)=>reply(r,modify(s=>{const x=q.body;if(!types.has(x.type)||!camera(s,x.cameraId)||!severity.has(x.severity)||!valid(x.message,1,300))return error("Проверьте сведения о событии");const e={id:next(s.events),type:x.type,cameraId:x.cameraId,severity:x.severity,message:x.message.trim(),createdAt:stamp()};s.events.push(e);return e;}),201));
