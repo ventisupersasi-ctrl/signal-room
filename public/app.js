@@ -21,12 +21,12 @@ function cameras(){
  $("#cameraCards").innerHTML=model.cameras.map(x=>'<article class="camera"><div class="camera-visual"><span>'+safe(x.id)+'</span></div><div class="camera-info"><small><span class="indicator '+safe(x.status)+'"></span>'+safe(x.status==="online"?"В СЕТИ":"НЕТ СВЯЗИ")+'</small><h3>'+safe(x.name)+'</h3><p>'+safe(x.location)+'</p><button type="button" class="minor" data-camera="'+safe(x.id)+'" data-status="'+(x.status==="online"?"offline":"online")+'">Сменить статус</button></div></article>').join("");
 }
 function events(){
- const severity=$("#severity").value;
- $("#events").innerHTML=model.events.filter(x=>!severity||x.severity===severity).map(x=>'<article class="event"><time>'+safe(new Date(x.createdAt).toLocaleString("ru-RU"))+'</time><span class="prio '+safe(x.severity)+'">'+safe(level[x.severity])+'</span><div><b>'+safe(x.cameraId)+' · '+safe(x.type)+'</b><p>'+safe(x.message)+'</p></div></article>').join("")||'<p class="empty">Событий по заданному фильтру нет</p>';
+ const severity=$("#severity").value,cameraId=$("#cameraIdFilter").value;
+ $("#events").innerHTML=model.events.filter(x=>(!severity||x.severity===severity)&&(!cameraId||x.cameraId===cameraId)).map(x=>'<article class="event"><time>'+safe(new Date(x.createdAt).toLocaleString("ru-RU"))+'</time><span class="prio '+safe(x.severity)+'">'+safe(level[x.severity])+'</span><div><b>'+safe(x.cameraId)+' · '+safe(x.type)+'</b><p>'+safe(x.message)+'</p></div></article>').join("")||'<p class="empty">Событий по заданному фильтру нет</p>';
 }
 async function refresh(){
  const [m,c,i,e]=await Promise.all([call("/api/metrics"),call("/api/cameras"),call("/api/incidents"),call("/api/events")]);
- model.cameras=c;model.incidents=i;model.events=e;
+ const saved=$("#cameraIdFilter").value;model.cameras=c;model.incidents=i;model.events=e;$("#cameraIdFilter").innerHTML='<option value="">Все камеры</option>'+model.cameras.map(x=>'<option value="'+safe(x.id)+'">'+safe(x.name)+'</option>').join("");$("#cameraIdFilter").value=saved;
  $("#total").textContent=m.total;$("#offline").textContent=m.offline;$("#active").textContent=m.active;$("#critical").textContent=m.critical;
  $("#server").textContent="● API ДОСТУПЕН";tickets();cameras();events();
 }
@@ -44,7 +44,7 @@ $("#date").textContent=new Date().toLocaleDateString("ru-RU");
 $("#addIncident").onclick=()=>open("incident");$("#addEvent").onclick=()=>open("event");
 $("#close").onclick=()=>$("#drawer").close();$("#cancel").onclick=()=>$("#drawer").close();
 $("#reload").onclick=()=>refresh().then(()=>alertBox("Информация обновлена")).catch(e=>alertBox(e.message,true));
-$("#severity").onchange=events;
+$("#severity").onchange=events;$("#cameraIdFilter").onchange=events;
 $("#form").onsubmit=async ev=>{
  ev.preventDefault();const payload=Object.fromEntries(new FormData(ev.target));
  try{await call(model.mode==="incident"?"/api/incidents":"/api/events","POST",payload);$("#drawer").close();$("#form").reset();await refresh();alertBox("Запись добавлена");}catch(e){alertBox(e.message,true);}
